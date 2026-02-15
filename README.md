@@ -24,20 +24,6 @@ It notifies the event name and the last user prompt (truncated to 100 characters
 3. Install the app to your workspace and copy the **Bot User OAuth Token** (`xoxb-...`)
 4. Invite the bot to the target channel (if sending to a channel)
 
-## Installation
-
-```bash
-go install github.com/nktks/cc-slack-notifier@latest
-```
-
-Or clone and build manually:
-
-```bash
-git clone https://github.com/nktks/cc-slack-notifier.git
-cd cc-slack-notifier
-go build -o cc-slack-notifier .
-```
-
 ## Environment variables
 
 | Variable | Fallback | Description |
