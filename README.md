@@ -2,6 +2,8 @@
 
 A local HTTP server that sends Slack notifications from Claude Code [Hooks](https://code.claude.com/docs/en/hooks), with optional Socket Mode bot to forward Slack replies back to Claude Code via tmux.
 
+`--dangerously-skip-permissions` is risky but approving every permission request at your terminal is tedious. cc-slack lets you review and respond to permission requests from Slack on your phone, so you can leave Claude Code running unattended without sacrificing safety.
+
 ## Notification
 
 Hooks forward events via `curl` to the server, which posts to Slack with session-based threading.
