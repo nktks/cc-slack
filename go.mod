@@ -1,3 +1,3 @@
-module github.com/nktks/cc-slack-notifier
+module github.com/nktks/cc-slack
 
 go 1.25.6

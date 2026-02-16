@@ -1,4 +1,4 @@
-# cc-slack-notifier
+# cc-slack
 
 A local HTTP server that sends Slack notifications from Claude Code [Hooks](https://code.claude.com/docs/en/hooks).
 
@@ -77,13 +77,13 @@ Prompt: "Help me choose"
 CC_NOTIFY_SLACK_TOKEN=xoxb-your-bot-token \
 CC_NOTIFY_SLACK_CHANNEL=C1234567890 \
 CC_NOTIFY_SLACK_MENTION_USER_ID=U1234567890 \
-go run github.com/nktks/cc-slack-notifier/cmd/server@latest
+go run github.com/nktks/cc-slack/cmd/server@latest
 ```
 
 Use `-port` flag to change the listen port (default: `19999`):
 
 ```bash
-go run github.com/nktks/cc-slack-notifier/cmd/server@latest -port 18888
+go run github.com/nktks/cc-slack/cmd/server@latest -port 18888
 ```
 
 ### 2. Configure Claude Code hooks

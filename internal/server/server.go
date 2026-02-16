@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nktks/cc-slack-notifier/internal/hook"
-	"github.com/nktks/cc-slack-notifier/internal/slack"
+	"github.com/nktks/cc-slack/internal/hook"
+	"github.com/nktks/cc-slack/internal/slack"
 )
 
 // Handler handles HTTP requests from Claude Code hooks.

@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/nktks/cc-slack-notifier/internal/server"
-	"github.com/nktks/cc-slack-notifier/internal/slack"
+	"github.com/nktks/cc-slack/internal/server"
+	"github.com/nktks/cc-slack/internal/slack"
 )
 
 func main() {
