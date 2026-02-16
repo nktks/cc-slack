@@ -16,7 +16,7 @@ import (
 type Handler struct {
 	Slack         slack.Client
 	Channel       string
-	MentionUserID string
+	UserID string
 	Threads       *ThreadStore
 }
 
@@ -52,7 +52,8 @@ func (h *Handler) HandleHook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if input.SessionID != "" && threadTS == "" && responseTS != "" {
-		h.Threads.Set(input.SessionID, responseTS)
+		tmuxTarget := r.Header.Get("X-Tmux-Target")
+		h.Threads.Set(input.SessionID, responseTS, tmuxTarget)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -60,8 +61,8 @@ func (h *Handler) HandleHook(w http.ResponseWriter, r *http.Request) {
 
 // mentionTarget returns the user ID to mention, or empty string if none.
 func (h *Handler) mentionTarget() string {
-	if h.MentionUserID != "" {
-		return h.MentionUserID
+	if h.UserID != "" {
+		return h.UserID
 	}
 	if strings.HasPrefix(h.Channel, "U") {
 		return h.Channel

@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/nktks/cc-slack/internal/bot"
 	"github.com/nktks/cc-slack/internal/server"
 	"github.com/nktks/cc-slack/internal/slack"
 )
@@ -22,7 +25,7 @@ func main() {
 		log.Fatal("CC_NOTIFY_SLACK_TOKEN and CC_NOTIFY_SLACK_CHANNEL must be set")
 	}
 
-	mentionUserID := os.Getenv("CC_NOTIFY_SLACK_MENTION_USER_ID")
+	userID := os.Getenv("CC_NOTIFY_SLACK_USER_ID")
 
 	threads := server.NewThreadStore()
 	go func() {
@@ -35,8 +38,34 @@ func main() {
 	h := &server.Handler{
 		Slack:         slack.New(token),
 		Channel:       channel,
-		MentionUserID: mentionUserID,
+		UserID:  userID,
 		Threads:       threads,
+	}
+
+	appToken := os.Getenv("CC_NOTIFY_SLACK_APP_TOKEN")
+	if appToken != "" {
+		var allowedUser string
+		if strings.HasPrefix(channel, "U") {
+			allowedUser = channel
+		} else {
+			allowedUser = userID
+		}
+		if allowedUser == "" {
+			log.Fatal("CC_NOTIFY_SLACK_USER_ID is required when bot is enabled with a channel (non-DM)")
+		}
+
+		b := &bot.Bot{
+			AppToken:    appToken,
+			BotToken:    token,
+			AllowedUser: allowedUser,
+			Threads:     threads,
+		}
+		go func() {
+			if err := b.Run(context.Background()); err != nil {
+				log.Fatalf("bot error: %v", err)
+			}
+		}()
+		log.Printf("bot started (allowed_user=%s)", allowedUser)
 	}
 
 	mux := http.NewServeMux()

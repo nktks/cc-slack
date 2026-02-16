@@ -79,7 +79,7 @@ func TestHandleHook(t *testing.T) {
 
 		mock := &mockSlack{returnTS: "333.444"}
 		threads := NewThreadStore()
-		threads.Set("sess-2", "111.222")
+		threads.Set("sess-2", "111.222", "")
 
 		h := &Handler{
 			Slack:   mock,
@@ -117,7 +117,7 @@ func TestHandleHook(t *testing.T) {
 		h := &Handler{
 			Slack:         mock,
 			Channel:       "C123",
-			MentionUserID: "U9999",
+			UserID: "U9999",
 			Threads:       NewThreadStore(),
 		}
 

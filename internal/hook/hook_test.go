@@ -141,6 +141,26 @@ func TestBuildMessage(t *testing.T) {
 		}
 	})
 
+	t.Run("PermissionRequest ExitPlanMode includes plan choices", func(t *testing.T) {
+		input := Input{
+			HookEventName: "PermissionRequest",
+			ToolName:      "ExitPlanMode",
+		}
+		msg := BuildMessage(input, "my prompt", "Now let me write the plan.", false)
+		if !contains(msg, "[PermissionRequest] ExitPlanMode") {
+			t.Errorf("should contain tool name, got:\n%s", msg)
+		}
+		if !contains(msg, "clear context and auto-accept edits") {
+			t.Errorf("should contain ExitPlanMode choices, got:\n%s", msg)
+		}
+		if !contains(msg, "manually approve edits") {
+			t.Errorf("should contain manually approve option, got:\n%s", msg)
+		}
+		if contains(msg, "allow all edits during this session") {
+			t.Errorf("should not contain Write/Edit choices, got:\n%s", msg)
+		}
+	})
+
 	t.Run("TaskCompleted event", func(t *testing.T) {
 		input := Input{HookEventName: "TaskCompleted"}
 		msg := BuildMessage(input, "do the thing", "done", false)

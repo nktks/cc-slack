@@ -12,8 +12,9 @@ type ThreadStore struct {
 }
 
 type threadEntry struct {
-	ThreadTS  string
-	CreatedAt time.Time
+	ThreadTS   string
+	TmuxTarget string
+	CreatedAt  time.Time
 }
 
 // NewThreadStore creates a new empty ThreadStore.
@@ -30,14 +31,28 @@ func (s *ThreadStore) Get(sessionID string) string {
 	return s.threads[sessionID].ThreadTS
 }
 
-// Set stores the thread_ts for a session.
-func (s *ThreadStore) Set(sessionID, threadTS string) {
+// Set stores the thread_ts and tmux target for a session.
+func (s *ThreadStore) Set(sessionID, threadTS, tmuxTarget string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.threads[sessionID] = threadEntry{
-		ThreadTS:  threadTS,
-		CreatedAt: time.Now(),
+		ThreadTS:   threadTS,
+		TmuxTarget: tmuxTarget,
+		CreatedAt:  time.Now(),
 	}
+}
+
+// GetByThreadTS returns the tmux target for a given thread_ts.
+// Returns empty string and false if not found.
+func (s *ThreadStore) GetByThreadTS(threadTS string) (tmuxTarget string, ok bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	for _, entry := range s.threads {
+		if entry.ThreadTS == threadTS {
+			return entry.TmuxTarget, true
+		}
+	}
+	return "", false
 }
 
 // CleanOlderThan removes entries older than maxAge.

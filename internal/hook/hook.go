@@ -195,6 +195,8 @@ func PermissionChoices(toolName string) string {
 		return "" // options are already in the tool input
 	case "Bash":
 		return "1. Yes\n2. Yes, and don't ask again for this session\n3. No"
+	case "ExitPlanMode":
+		return "1. Yes, clear context and auto-accept edits (shift+tab)\n2. Yes, auto-accept edits\n3. Yes, manually approve edits"
 	default:
 		return "1. Yes\n2. Yes, allow all edits during this session\n3. No"
 	}
