@@ -137,7 +137,7 @@ Add the following to `~/.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'curl -sf -X POST -H \"Content-Type: application/json\" -H \"X-Tmux-Target: $(tmux display-message -p \"#{session_name}:#{window_index}.#{pane_index}\" 2>/dev/null)\" -d @- http://localhost:19999/hook'"
+            "command": "bash -c 'curl -sf -X POST -H \"Content-Type: application/json\" -H \"X-Tmux-Target: $([ -n \"$TMUX\" ] && tmux display-message -p \"#{session_name}:#{window_index}.#{pane_index}\")\" -d @- http://localhost:19999/hook'"
           }
         ]
       }
@@ -148,7 +148,7 @@ Add the following to `~/.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'curl -sf -X POST -H \"Content-Type: application/json\" -H \"X-Tmux-Target: $(tmux display-message -p \"#{session_name}:#{window_index}.#{pane_index}\" 2>/dev/null)\" -d @- http://localhost:19999/hook'"
+            "command": "bash -c 'curl -sf -X POST -H \"Content-Type: application/json\" -H \"X-Tmux-Target: $([ -n \"$TMUX\" ] && tmux display-message -p \"#{session_name}:#{window_index}.#{pane_index}\")\" -d @- http://localhost:19999/hook'"
           }
         ]
       }
