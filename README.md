@@ -124,6 +124,12 @@ Use `-port` flag to change the listen port (default: `19999`):
 go run github.com/nktks/cc-slack/cmd/server@latest -port 18888
 ```
 
+With weekly usage report ([ccusage](https://github.com/ryoppippi/ccusage) must be installed beforehand):
+
+```bash
+go run github.com/nktks/cc-slack/cmd/server@latest -ccusage-cron "0 9 * * 1"
+```
+
 ### 2. Configure Claude Code hooks
 
 Add the following to `~/.claude/settings.json`:
@@ -184,6 +190,7 @@ You can also add hooks interactively by typing `/hooks` in Claude Code.
 | Flag | Default | Description |
 |---|---|---|
 | `-port` | `19999` | Server listen port |
+| `-ccusage-cron` | - | Cron schedule for [ccusage](https://github.com/ryoppippi/ccusage) weekly report (e.g. `"0 9 * * 1"` for every Monday 9:00). Requires `ccusage` to be installed |
 
 ### Mention behavior
 

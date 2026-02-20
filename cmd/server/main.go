@@ -11,12 +11,15 @@ import (
 	"time"
 
 	"github.com/nktks/cc-slack/internal/bot"
+	"github.com/nktks/cc-slack/internal/ccusage"
 	"github.com/nktks/cc-slack/internal/server"
 	"github.com/nktks/cc-slack/internal/slack"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
 	port := flag.String("port", "19999", "server listen port")
+	ccusageCron := flag.String("ccusage-cron", "", "cron schedule for ccusage weekly report (e.g. \"0 9 * * 1\")")
 	flag.Parse()
 
 	token := envWithFallback("CC_NOTIFY_SLACK_TOKEN", "SLACK_TOKEN")
@@ -27,6 +30,8 @@ func main() {
 
 	userID := os.Getenv("CC_NOTIFY_SLACK_USER_ID")
 
+	slackClient := slack.New(token)
+
 	threads := server.NewThreadStore()
 	go func() {
 		for {
@@ -36,7 +41,7 @@ func main() {
 	}()
 
 	h := &server.Handler{
-		Slack:         slack.New(token),
+		Slack:         slackClient,
 		Channel:       channel,
 		UserID:  userID,
 		Threads:       threads,
@@ -66,6 +71,31 @@ func main() {
 			}
 		}()
 		log.Printf("bot started (allowed_user=%s)", allowedUser)
+	}
+
+	if *ccusageCron != "" {
+		c := cron.New()
+		_, err := c.AddFunc(*ccusageCron, func() {
+			log.Printf("running ccusage weekly report")
+			data, err := ccusage.Run()
+			if err != nil {
+				log.Printf("ccusage run failed: %v", err)
+				return
+			}
+			text, err := ccusage.FormatSlackTable(data)
+			if err != nil {
+				log.Printf("ccusage format failed: %v", err)
+				return
+			}
+			if _, err := slackClient.PostMessage(channel, text, ""); err != nil {
+				log.Printf("ccusage slack post failed: %v", err)
+			}
+		})
+		if err != nil {
+			log.Fatalf("invalid ccusage-cron schedule: %v", err)
+		}
+		c.Start()
+		log.Printf("ccusage cron started (schedule=%s)", *ccusageCron)
 	}
 
 	mux := http.NewServeMux()
